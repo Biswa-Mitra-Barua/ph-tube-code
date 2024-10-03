@@ -60,6 +60,19 @@ const loadCategoryVideos = (id) => {
 const displayVideos = (videos) => {
     const videosContainer = document.getElementById('videos');
     videosContainer.innerHTML = "";
+    if (videos.length == 0){
+        videosContainer.classList.remove("grid");
+        videosContainer.innerHTML = `
+        <div class = "min-h-[300px] flex flex-col justify-center items-center">
+            <img src="assets/Icon.png" alt="">
+            <h2 class = "py-5 text-xl text-center font-bold">No Content Available in this Category</h2>
+        </div>
+        `;
+        return;
+    }
+    else {
+        videosContainer.classList.add("grid");
+    }
     videos.forEach((video) => {
         console.log(video);
         const card = document.createElement('div');
@@ -124,9 +137,6 @@ const displayCategories = (categories) => {
         categoryContainer.append(buttonContainer);
     })
 }
-
-
-
 
 loadCategories();
 loadVideos();
