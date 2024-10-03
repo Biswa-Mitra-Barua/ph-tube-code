@@ -1,6 +1,4 @@
-// console.log('added video')--checking
 function getTime (time){
-    // const day = parseInt(time / 86400);
     const hour = parseInt(time / 3600);
     const seconds = parseInt(time % 3600);
     const minute = parseInt(seconds / 60);
@@ -17,7 +15,6 @@ const removeActiveClass =() => {
 }
 
 // 1. fetch - load and show all categories
-
 //create load categories
 const loadCategories = () => {
     //fetch the data
@@ -42,12 +39,34 @@ const loadCategoryVideos = (id) => {
         .then(data => {
             const activeBtn = document.getElementById(`btn-${id}`);
             //remove active class from all
-            removeActiveClass()
+            removeActiveClass();
             // console.log(activeBtn)
             activeBtn.classList.add('active');
             displayVideos(data.category)
         })
         .catch(error => console.log(error))
+}
+
+const loadDetails = async(videoId) => {
+    // console.log(videoId)
+    const uri =`https://openapi.programming-hero.com/api/phero-tube/video/${videoId}`
+    const res = await fetch(uri);
+    const data = await res.json();
+    // console.log(data);
+    displayDetails(data.video);
+}
+
+const displayDetails = (video) => {
+    const detailContainer = document.getElementById('modal-content');
+    detailContainer.innerHTML = `
+    <img src = ${video.thumbnail}/>
+    <p>${video.description}</p>
+    `
+    //way 1
+    // document.getElementById('showModalData').click();
+
+    //way 2
+    document.getElementById('customModal').showModal();
 }
 
 // const cardDemo = 
@@ -88,7 +107,7 @@ const displayVideos = (videos) => {
         videosContainer.classList.add("grid");
     }
     videos.forEach((video) => {
-        console.log(video);
+        // console.log(video);
         const card = document.createElement('div');
         card.classList = 'card card-compact';
         card.innerHTML =
@@ -97,7 +116,7 @@ const displayVideos = (videos) => {
     <img
     class = "h-full w-full object-cover"
       src=${video.thumbnail}
-      alt="Shoes" />
+      alt="Videos" />
       ${
         video.others.posted_date?.length == 0 ?
          "":`<span class="absolute text-xs right-2 bottom-2 bg-black text-white p-2 rounded">${getTime(video.others.posted_date)}</span>`
@@ -115,6 +134,7 @@ const displayVideos = (videos) => {
             ${video.authors[0].verified === true ? `<img class="w-5" src= "https://img.icons8.com/?size=48&id=D9RtvkuOe31p&format=png"/>`: ""}
         </div>
         <p class="text-gray-400">${video.others.views} views</p>
+        <p><button onclick = "loadDetails('${video.video_id}')" class="btn btn-sm btn-error">Details</button></p>
     </div>
   </div>
         
