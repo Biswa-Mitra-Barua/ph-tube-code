@@ -9,6 +9,13 @@ function getTime (time){
     return `${hour} hr ${minute} min ${remSeconds} sec ago`;
 }
 
+const removeActiveClass =() => {
+    const buttons = document.getElementsByClassName('category-btn');
+    for (let btn of buttons){
+        btn.classList.remove('active')
+    }
+}
+
 // 1. fetch - load and show all categories
 
 //create load categories
@@ -32,7 +39,14 @@ const loadCategoryVideos = (id) => {
     // alert(id);
     fetch(`https://openapi.programming-hero.com/api/phero-tube/category/${id}`)
         .then(res => res.json())
-        .then(data => displayVideos(data.category))
+        .then(data => {
+            const activeBtn = document.getElementById(`btn-${id}`);
+            //remove active class from all
+            removeActiveClass()
+            // console.log(activeBtn)
+            activeBtn.classList.add('active');
+            displayVideos(data.category)
+        })
         .catch(error => console.log(error))
 }
 
@@ -110,18 +124,11 @@ const displayVideos = (videos) => {
 
 }
 
-// {
-//     "category_id": "1001",
-//     "category": "Music"
-//   },
-
 // create display all categories button
 const displayCategories = (categories) => {
     const categoryContainer = document.getElementById('categories');
     //add data in html
-    //create a button
     categories.forEach((item) => {
-        // console.log(item)
         // const button = document.createElement('button')
         // button.classList = 'btn';
         // button.innerText = item.category;
@@ -129,7 +136,7 @@ const displayCategories = (categories) => {
         const buttonContainer = document.createElement('div');
         buttonContainer.innerHTML =
         `
-        <button onclick ="loadCategoryVideos(${item.category_id})" class= "btn">
+        <button id="btn-${item.category_id}" onclick ="loadCategoryVideos(${item.category_id})" class= "btn category-btn">
         ${item.category}
         </button>
 
